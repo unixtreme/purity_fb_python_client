@@ -34,14 +34,15 @@ class PurityFb:
     DEFAULT_CONN_TIMEOUT = 10.0
     DEFAULT_RETRIES = 5
 
-    def __init__(self, host, version=None, api_token=None):
+    def __init__(self, host, version=None, api_token=None, ssl_verify=False):
         self._api_client = ApiClient(host='https://{}/api'.format(host))
         self.request_timeout = urllib3.Timeout(
             connect=PurityFb.DEFAULT_CONN_TIMEOUT,
             read=PurityFb.DEFAULT_READ_TIMEOUT)
         self.retries = urllib3.Retry(total=PurityFb.DEFAULT_RETRIES)
         self.api_version = VersionApi(self._api_client)
-        self.disable_verify_ssl()
+        if not ssl_verify:
+            self.disable_verify_ssl()
 
         if version:
             self._version = self._check_rest_version(version)
